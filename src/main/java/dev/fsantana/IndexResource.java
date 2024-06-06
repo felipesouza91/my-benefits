@@ -13,7 +13,9 @@ import org.jboss.resteasy.reactive.RestQuery;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
@@ -38,12 +40,24 @@ public class IndexResource {
         return index.data("days", daysOfTheWeek);
     }
 
+    @POST
+    @Produces(MediaType.TEXT_HTML)
+    @Path("/create")
+    public TemplateInstance save(@FormParam("trafficPrice") String trafficPrice,
+            @FormParam("mealPrice") String mealPrice, @FormParam("workedDays") String[] workedDays) {
+        System.out.println(trafficPrice);
+        System.out.println(mealPrice);
+        Arrays.asList(workedDays).stream().forEach(System.out::println);
+        return index.instance();
+    }
+
     private Locale parseLocale(String locales) {
         String[] locals = locales.split("-");
         return new Locale(locals[0], locals[1]);
     }
 
     class DayOfWeek {
+
         private int index;
         private String displayName;
 
