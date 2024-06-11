@@ -1,6 +1,7 @@
 FROM  openjdk:17.0.2-oraclelinux8 AS build
 WORKDIR /app
 COPY . .
+RUN chmod +x ./mvnw
 RUN ./mvnw clean package
 
 FROM registry.access.redhat.com/ubi8/openjdk-21:1.18 as server
