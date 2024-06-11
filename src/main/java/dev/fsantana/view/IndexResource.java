@@ -1,4 +1,4 @@
-package dev.fsantana;
+package dev.fsantana.view;
 
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
@@ -10,6 +10,7 @@ import java.util.Locale;
 import org.jboss.resteasy.reactive.RestHeader;
 import org.jboss.resteasy.reactive.RestQuery;
 
+import dev.fsantana.view.dto.StateDTO;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.inject.Inject;
@@ -30,6 +31,9 @@ public class IndexResource {
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance get(@RestQuery String name, @RestHeader("Accept-Language") String locales) {
         List<DayOfWeek> daysOfTheWeek = new ArrayList<>();
+        List<StateDTO> states = new ArrayList<>();
+        states.add(new StateDTO("RJ", "Rio de janeiro"));
+        states.add(new StateDTO("SP", "Sao Paulo"));
         String language = locales.substring(0, locales.indexOf(","));
         System.out.println(locales);
         Arrays.asList(LocalDateTime.now().getDayOfWeek().values()).stream().forEach(item -> {
@@ -37,7 +41,7 @@ public class IndexResource {
                     .add(new DayOfWeek(item.getValue(),
                             item.getDisplayName(TextStyle.FULL, parseLocale(language))));
         });
-        return index.data("days", daysOfTheWeek);
+        return index.data("days", daysOfTheWeek).data("states", states);
     }
 
     @POST
