@@ -6,10 +6,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.RestHeader;
 import org.jboss.resteasy.reactive.RestQuery;
 
+import dev.fsantana.domain.model.State;
+import dev.fsantana.service.FindStateService;
+import dev.fsantana.service.HolidayService;
 import dev.fsantana.view.dto.StateDTO;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
@@ -27,13 +32,24 @@ public class IndexResource {
     @Inject
     Template index;
 
+    @RestClient
+    FindStateService findStateService;
+
+    @Inject
+    HolidayService holidayService;
+
     @GET
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance get(@RestQuery String name, @RestHeader("Accept-Language") String locales) {
+
+        List<State> allStates = findStateService.getAllStates();
+        System.out.println(allStates.size());
+
+        List<StateDTO> states = allStates.stream().map(state -> new StateDTO(state.sigla, state.nome))
+                .collect(Collectors.toList());
+
         List<DayOfWeek> daysOfTheWeek = new ArrayList<>();
-        List<StateDTO> states = new ArrayList<>();
-        states.add(new StateDTO("RJ", "Rio de janeiro"));
-        states.add(new StateDTO("SP", "Sao Paulo"));
+
         String language = locales.substring(0, locales.indexOf(","));
         System.out.println(locales);
         Arrays.asList(LocalDateTime.now().getDayOfWeek().values()).stream().forEach(item -> {
@@ -48,10 +64,14 @@ public class IndexResource {
     @Produces(MediaType.TEXT_HTML)
     @Path("/create")
     public TemplateInstance save(@FormParam("trafficPrice") String trafficPrice,
-            @FormParam("mealPrice") String mealPrice, @FormParam("workedDays") String[] workedDays) {
-        System.out.println(trafficPrice);
+            @FormParam("mealPrice") String mealPrice, @FormParam("workedDays") String[] workedDays,
+            @FormParam("state") String state, @FormParam("city") String city) {
+        System.out.println(state);
+        System.out.println(city);
         System.out.println(mealPrice);
-        Arrays.asList(workedDays).stream().forEach(System.out::println);
+        System.out.println(trafficPrice);
+        holidayService.loadHoladys(city, state, null);
+
         return index.instance();
     }
 
