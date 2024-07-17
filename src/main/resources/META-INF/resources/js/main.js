@@ -7,7 +7,8 @@ $(document).ready(function(){
 
   $("#state").on('change', function () {
     var selectedState = $('#state :selected').val()
-    console.log(selectedState)
+    $('#city').empty()
+    $('#city').append("<option selected>Selecione uma Cidade</option>")
     $.ajax({
       url: "/cities/"+selectedState,
       success: function (result) {
