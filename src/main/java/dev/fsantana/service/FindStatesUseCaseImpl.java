@@ -11,7 +11,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
-public class FindStatesUseCaseImpl implements FindStatesUseCase {
+class FindStatesUseCaseImpl implements FindStatesUseCase {
 
   private StateRepository stateRepository;
 
