@@ -8,12 +8,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.RestHeader;
 import org.jboss.resteasy.reactive.RestQuery;
 
 import dev.fsantana.domain.model.State;
-import dev.fsantana.service.FindStateService;
+import dev.fsantana.domain.usecases.FindStatesUseCase;
 import dev.fsantana.service.HolidayService;
 import dev.fsantana.view.dto.StateDTO;
 import io.quarkus.qute.Template;
@@ -32,8 +31,8 @@ public class IndexResource {
     @Inject
     Template index;
 
-    @RestClient
-    FindStateService findStateService;
+    @Inject
+    private FindStatesUseCase findStatesUseCase;
 
     @Inject
     HolidayService holidayService;
@@ -42,16 +41,14 @@ public class IndexResource {
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance get(@RestQuery String name, @RestHeader("Accept-Language") String locales) {
 
-        List<State> allStates = findStateService.getAllStates();
-        System.out.println(allStates.size());
+        List<State> allStates = findStatesUseCase.findStates();
 
-        List<StateDTO> states = allStates.stream().map(state -> new StateDTO(state.sigla, state.nome))
+        List<StateDTO> states = allStates.stream().map(state -> new StateDTO(state.getShortName(), state.getFullName()))
                 .collect(Collectors.toList());
 
         List<DayOfWeek> daysOfTheWeek = new ArrayList<>();
 
         String language = locales.substring(0, locales.indexOf(","));
-        System.out.println(locales);
         Arrays.asList(LocalDateTime.now().getDayOfWeek().values()).stream().forEach(item -> {
             daysOfTheWeek
                     .add(new DayOfWeek(item.getValue(),
@@ -66,10 +63,7 @@ public class IndexResource {
     public TemplateInstance save(@FormParam("trafficPrice") String trafficPrice,
             @FormParam("mealPrice") String mealPrice, @FormParam("workedDays") String[] workedDays,
             @FormParam("state") String state, @FormParam("city") String city) {
-        System.out.println(state);
-        System.out.println(city);
-        System.out.println(mealPrice);
-        System.out.println(trafficPrice);
+
         holidayService.loadHoladys(city, state, null);
 
         return index.instance();
