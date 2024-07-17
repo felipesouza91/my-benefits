@@ -34,7 +34,6 @@ public class HolidayService {
       String url = String.format("https://www.feriados.com.br/feriados-%s-%s.php?ano=%s", cityUrlFormated, state,
           String.valueOf(year));
 
-      System.out.println(url);
       final HtmlPage page = webClient.getPage(url);
       DomNodeList<DomNode> querySelectorAll = page.querySelectorAll("ul.multi-column");
       if (querySelectorAll.isEmpty()) {
