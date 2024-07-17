@@ -13,7 +13,7 @@ public class City {
   @Id
   private Long id;
 
-  @Column(nullable = false, unique = true)
+  @Column(nullable = false)
   private String name;
 
   @ManyToOne()
@@ -23,9 +23,10 @@ public class City {
   public City() {
   }
 
-  public City(Long id, String name) {
+  public City(Long id, String name, State state) {
     this.id = id;
     this.name = name;
+    this.state = state;
   }
 
   public Long getId() {
@@ -42,6 +43,14 @@ public class City {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public State getState() {
+    return state;
+  }
+
+  public void setState(State state) {
+    this.state = state;
   }
 
 }
