@@ -1,6 +1,6 @@
 package dev.fsantana.view;
 
-import java.time.LocalDateTime;
+import java.time.DayOfWeek;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.reactive.RestHeader;
 import org.jboss.resteasy.reactive.RestQuery;
 
@@ -46,13 +47,14 @@ public class IndexResource {
         List<StateDTO> states = allStates.stream().map(state -> new StateDTO(state.getShortName(), state.getFullName()))
                 .collect(Collectors.toList());
 
-        List<DayOfWeek> daysOfTheWeek = new ArrayList<>();
+        List<DayOfWeekDTO> daysOfTheWeek = new ArrayList<>();
 
         String language = locales.substring(0, locales.indexOf(","));
-        Arrays.asList(LocalDateTime.now().getDayOfWeek().values()).stream().forEach(item -> {
+
+        Arrays.asList(DayOfWeek.values()).stream().forEach(item -> {
             daysOfTheWeek
-                    .add(new DayOfWeek(item.getValue(),
-                            item.getDisplayName(TextStyle.FULL, parseLocale(language))));
+                    .add(new DayOfWeekDTO(item.getValue(),
+                            StringUtils.capitalize(item.getDisplayName(TextStyle.FULL, parseLocale(language)))));
         });
         return index.data("days", daysOfTheWeek).data("states", states);
     }
@@ -74,12 +76,12 @@ public class IndexResource {
         return new Locale(locals[0], locals[1]);
     }
 
-    class DayOfWeek {
+    class DayOfWeekDTO {
 
         private int index;
         private String displayName;
 
-        public DayOfWeek(int index, String displayName) {
+        public DayOfWeekDTO(int index, String displayName) {
             this.displayName = displayName;
             this.index = index;
         }
