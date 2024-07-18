@@ -1,16 +1,32 @@
 package dev.fsantana.domain.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "holidays")
 public class Holiday {
-  public String type;
-  public String name;
-  public Date date;
+
+  @Id
+  private Long id;
+
+  @Column(name = "type", nullable = false)
+  private String type;
+
+  @Column(name = "name", nullable = false)
+  private String name;
+
+  @Column(name = "date", nullable = false, columnDefinition = "DATE")
+  private LocalDate date;
 
   public Holiday() {
   }
 
-  public Holiday(String type, String name, Date date) {
+  public Holiday(String type, String name, LocalDate date) {
     this.type = type;
     this.name = name;
     this.date = date;
@@ -32,11 +48,11 @@ public class Holiday {
     this.name = name;
   }
 
-  public Date getDate() {
+  public LocalDate getDate() {
     return date;
   }
 
-  public void setDate(Date date) {
+  public void setDate(LocalDate date) {
     this.date = date;
   }
 
