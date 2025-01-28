@@ -26,7 +26,7 @@ public class CityController {
   @GET
   @Path("{state}")
   public Response getCitiesByState(@RestPath("state") String state) {
-    List<City> cityByState = findCityByStateUseCase.execute(state.toUpperCase);
+    List<City> cityByState = findCityByStateUseCase.execute(state.toUpperCase());
     List<CityDTO> cities = cityByState.stream()
         .map(city -> new CityDTO(city.getName(),
             new StateDTO(city.getState().getShortName(), city.getState().getFullName())))
