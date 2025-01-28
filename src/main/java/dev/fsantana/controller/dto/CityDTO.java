@@ -1,4 +1,4 @@
-package dev.fsantana.view.dto;
+package dev.fsantana.controller.dto;
 
 public record CityDTO(String fullName, StateDTO state) {
 }
